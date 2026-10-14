@@ -65,3 +65,30 @@ footer{text-align:center;color:#64748b;font-size:.79rem;margin-top:22px}
 @media(max-width:800px){.formgrid,.metricgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.varlist{grid-template-columns:1fr}}
 @media(max-width:570px){.formgrid,.metricgrid,.scenario-grid{grid-template-columns:1fr}.inputrow{grid-template-columns:1fr 88px}header{padding:22px}.panel{padding:15px}}
 @media print{body{background:#fff}.no-print{display:none!important}.panel,header{box-shadow:none}.wrap{max-width:none;padding:0}}
+
+/* Revisión docente v5: jerarquía de lectura y estilo */
+:root{--bg:#f6f8fc;--ink:#172438;--line:#dfe7f0;--shadow:0 7px 24px rgba(23,37,66,.065)}
+body{background:#f4f7fb;letter-spacing:.002em}
+.wrap{max-width:1150px;padding:20px 22px 70px}
+header{background:linear-gradient(125deg,#102847,#174b83 70%,#1974a8);border-radius:20px;padding:33px 36px}
+header h1{font-size:clamp(1.8rem,3.5vw,2.65rem);letter-spacing:-.045em}
+header p{max-width:750px;font-size:.96rem}
+.section-title{font-size:1.37rem;letter-spacing:-.025em;color:#173354;margin-top:33px;margin-bottom:12px;padding-top:12px;border-top:1px solid #dce4ef;scroll-margin-top:78px}
+.panel{border-radius:15px;padding:23px 25px;box-shadow:0 4px 14px rgba(28,42,70,.035)}
+.solution-step{border-radius:12px;margin-bottom:10px}
+.solution-head{background:#eef4fc;color:#173f70}
+.solution-body{padding:16px 18px}
+.eqbox{background:#f7faff;border-color:#e0ebfa}
+.metric{background:#fafcff}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid #85bff8;outline-offset:2px}
+.navbar{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 4px;padding:12px 14px;background:white;border:1px solid #dce5ef;border-radius:13px;position:sticky;top:0;z-index:10;box-shadow:0 3px 12px #1e293b10}
+.navbar a{text-decoration:none;color:#234465;font-size:.82rem;font-weight:760;padding:7px 9px;border-radius:8px}
+.navbar a:hover{background:#eaf2fd;color:#1d4ed8}
+.scope-band{background:#fff;border:1px solid #dce5ef;border-left:4px solid #2982ab;border-radius:11px;padding:13px 16px;margin:14px 0;color:#41516a;font-size:.85rem}
+.section-lead{color:#66758a;font-size:.85rem;margin:-6px 0 12px}
+.compact-flow .solution-step{max-width:none}
+.assumption-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+.assumption-grid span{background:#f4f8fd;border:1px solid #e1e9f4;border-radius:9px;padding:9px;font-size:.77rem}
+.legend-note{font-size:.8rem;color:#5a718b}
+@media(max-width:720px){.wrap{padding:12px 11px 44px}.panel{padding:16px}.navbar{position:static;gap:4px}.assumption-grid{grid-template-columns:1fr}}
+@media print{.navbar{display:none}.solution-step{break-inside:avoid}}

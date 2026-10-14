@@ -33,11 +33,11 @@ export function validateInputs(input) {
   ];
 
   positiveValues.forEach(([name, value]) => {
-    if (!(value > 0)) errors.push(`${name} debe ser mayor que cero.`);
+    if (!Number.isFinite(value) || !(value > 0)) errors.push(`${name} debe ser mayor que cero.`);
   });
   if (input.r2 <= input.r1) errors.push("r₂ debe ser mayor que r₁.");
   if (input.rhoP <= input.rho) errors.push("Este modelo de clarificación supone ρₚ > ρ.");
-  if (input.rIni < input.r1 || input.rIni >= input.r2) {
+  if (!Number.isFinite(input.rIni) || input.rIni < input.r1 || input.rIni >= input.r2) {
     errors.push("El radio inicial debe cumplir r₁ ≤ r inicial < r₂.");
   }
   return errors;
@@ -51,9 +51,11 @@ export function calculate(input) {
   const u2 = K * input.r2;
   const uavg = (input.r2 - input.rIni) / t;
   const qCap = V / t;
+  const qDirect = V * input.omega ** 2 * dRho * input.dp ** 2
+    / (18 * input.mu * Math.log(input.r2 / input.rIni));
   const Re = input.rho * u2 * input.dp / input.mu;
   const ac2 = input.omega ** 2 * input.r2;
   const G = ac2 / input.g;
   const ug = input.dp ** 2 * dRho * input.g / (18 * input.mu);
-  return { ...input, dRho, V, K, t, u2, uavg, qCap, Re, ac2, G, ug };
+  return { ...input, dRho, V, K, t, u2, uavg, qCap, qDirect, Re, ac2, G, ug };
 }

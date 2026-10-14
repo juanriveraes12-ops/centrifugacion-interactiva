@@ -39,6 +39,13 @@ describe("laboratorio de centrifugación", () => {
     expect(result.t).toBeGreaterThan(0);
     expect(result.qCap).toBeGreaterThan(0);
     expect(result.Re).toBeGreaterThan(0);
+    expect(result.qDirect).toBeCloseTo(result.qCap, 12);
+  });
+
+  it("aplica correctamente la ecuación directa con radio medio", () => {
+    const result = calculate({ ...sample, rIni: (sample.r1 + sample.r2) / 2 });
+    expect(result.qDirect).toBeCloseTo(result.qCap, 12);
+    expect(result.t).toBeLessThan(calculate(sample).t);
   });
 
   it("rechaza geometría y densidades incompatibles", () => {
@@ -47,6 +54,12 @@ describe("laboratorio de centrifugación", () => {
         "r₂ debe ser mayor que r₁.",
         "Este modelo de clarificación supone ρₚ > ρ.",
       ]),
+    );
+  });
+
+  it("rechaza valores no finitos", () => {
+    expect(validateInputs({ ...sample, mu: Number.NaN })).toContain(
+      "μ debe ser mayor que cero.",
     );
   });
 });

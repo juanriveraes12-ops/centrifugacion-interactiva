@@ -3,28 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Laboratorio interactivo de sedimentación centrífuga</title>
+<title>Centrifugación · Laboratorio interactivo</title>
 <link rel="stylesheet" href="/src/styles.css" />
 </head>
 <body>
 <div class="wrap">
 <header>
-  <h1>Laboratorio interactivo de sedimentación centrífuga</h1>
-  <p>Simulador docente para formular, resolver y comparar ejercicios de clarificación sólido‑líquido en una centrífuga tubular. Las ecuaciones se presentan con significado físico, variables, sustitución y resultado.</p>
+  <h1>Centrifugación · Laboratorio interactivo</h1>
+  <p>Modelo didáctico de centrifugación tubular: configure el problema, recorra su resolución matemática y examine la respuesta física. Las herramientas de operación, diseño inverso y escenarios se encuentran al final.</p>
   <div class="badges">
     <span class="badge">Modelo de Stokes</span><span class="badge">Centrífuga tubular</span>
     <span class="badge">Trayectoria r inicial → pared</span><span class="badge">Análisis paramétrico multivariable</span>
   </div>
 </header>
+<nav class="navbar no-print" aria-label="Navegación del simulador">
+<a href="#datos">01 · Datos</a><a href="#solucion">02 · Resolución</a><a href="#resultados">03 · Resultados</a><a href="#operacion">04 · Operación</a><a href="#diseno">05 · Diseño inverso</a><a href="#escenarios">06 · Comparador</a></nav>
+<div class="scope-band"><strong>Cómo leer el ejercicio:</strong> defina parámetros y criterio radial, siga las siete ecuaciones de la resolución y compare las predicciones al final. El caudal límite es ideal; no implica recuperación total ni eficiencia garantizada.</div>
 
-<h2 class="section-title">A. Datos del ejercicio</h2>
+<h2 id="datos" class="section-title">A. Datos del ejercicio</h2>
 <section class="panel">
 <p class="sub">El estudiante puede modificar todos los datos. Los valores se convierten internamente al SI.</p>
 <h3>Geometría</h3>
 <div class="formgrid">
-  <div class="field"><label>Radio interno, r₁</label><div class="inputrow"><input id="r1" type="number" value="3.52" step="any"><select id="r1u"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
-  <div class="field"><label>Radio externo, r₂</label><div class="inputrow"><input id="r2" type="number" value="6.58" step="any"><select id="r2u"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
-  <div class="field"><label>Altura/profundidad, b</label><div class="inputrow"><input id="L" type="number" value="185" step="any"><select id="Lu"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
+  <div class="field"><label>Radio de la superficie interna del líquido, r₁</label><div class="inputrow"><input id="r1" type="number" value="3.52" step="any"><select id="r1u"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
+  <div class="field"><label>Radio interno de la pared del rotor, r₂</label><div class="inputrow"><input id="r2" type="number" value="6.58" step="any"><select id="r2u"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
+  <div class="field"><label>Longitud axial útil, b</label><div class="inputrow"><input id="L" type="number" value="185" step="any"><select id="Lu"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
 </div>
 
 <h3 style="margin-top:16px">Partícula y líquido</h3>
@@ -39,84 +42,27 @@
 <h3 style="margin-top:16px">Operación y trayectoria</h3>
 <div class="formgrid">
   <div class="field"><label>Velocidad de rotación, N</label><div class="inputrow"><input id="N" type="number" value="12900" step="any"><select id="Nu"><option value="rph">rph</option><option value="rpm">rpm</option><option value="rps">rps</option></select></div></div>
-  <div class="field"><label>Criterio de cálculo</label><select id="criterion"><option value="conservative">Trayectoria completa r₁ → r₂ (McCabe / Geankoplis)</option><option value="cut">Diámetro de corte: radio medio → r₂ (McCabe / Geankoplis)</option><option value="custom">Radio inicial personalizado → r₂</option></select></div>
+  <div class="field"><label>Criterio de cálculo</label><select id="criterion"><option value="conservative">Trayectoria desde superficie libre r₁ → pared r₂</option><option value="cut">Trayectoria representativa: radio medio → pared (corte ideal)</option><option value="custom">Radio inicial personalizado → r₂</option></select></div>
   <div class="field hidden" id="customRABox"><label>Radio inicial de la partícula, rA</label><div class="inputrow"><input id="rA" type="number" value="5.05" step="any"><select id="rAu"><option value="mm">mm</option><option value="cm">cm</option><option value="m">m</option></select></div></div>
 </div>
 
 <div class="btns no-print">
   <button class="primary" id="calcBtn">Calcular</button>
-  <button class="secondary" id="animateBtn">▶ Animar trayectoria</button>
+  <button class="secondary" id="animateBtn">▶ Animar trayectoria</button><label style="display:inline-flex;align-items:center;gap:7px;margin:0">Duración visual <select id="animDuration" style="width:auto"><option value="2500">2,5 s</option><option value="5000" selected>5 s</option><option value="10000">10 s</option></select></label>
   <button id="sampleBtn">Restaurar ejercicio original</button>
   <button id="printBtn" type="button">Imprimir / guardar PDF</button>
 </div>
 <div id="validation"></div>
 </section>
 
-<h2 class="section-title">B. Resultados del ejercicio</h2>
-<section class="grid two">
-<div class="panel">
-  <h2>Variables calculadas</h2>
-  <div class="metricgrid">
-    <div class="metric"><div class="k">Diferencia de densidad, Δρ</div><div class="v" id="deltaRho"></div><div class="s">ρₚ − ρ</div></div>
-    <div class="metric"><div class="k">Velocidad angular, ω</div><div class="v" id="omega"></div><div class="s">2πN</div></div>
-    <div class="metric"><div class="k">Volumen de líquido, V</div><div class="v" id="vol"></div><div class="s">πb(r₂²−r₁²)</div></div>
-    <div class="metric"><div class="k">Velocidad en la pared, u(r₂)</div><div class="v" id="u2"></div><div class="s">Velocidad local de precipitación</div></div>
-    <div class="metric"><div class="k">Tiempo de precipitación</div><div class="v" id="tSet"></div><div class="s">Desde el radio inicial hasta r₂</div></div>
-    <div class="metric"><div class="k">Caudal límite, q</div><div class="v" id="qCap"></div><div class="s">Capacidad compatible con esa trayectoria</div></div>
-  </div>
-  <div id="regimeBox"></div>
-</div>
-
-<div class="panel">
-  <h2>Interpretación física</h2>
-  <div class="metricgrid">
-    <div class="metric"><div class="k">Reynolds de partícula en r₂</div><div class="v" id="Re"></div><div class="s">Control del régimen de sedimentación</div></div>
-    <div class="metric"><div class="k">Aceleración centrífuga en r₂</div><div class="v" id="ac2"></div><div class="s">ω²r₂</div></div>
-    <div class="metric"><div class="k">Campo centrífugo relativo</div><div class="v" id="Gfactor"></div><div class="s">ω²r₂/g</div></div>
-    <div class="metric"><div class="k">Velocidad media de trayectoria</div><div class="v" id="uavg"></div><div class="s">(r₂−r inicial)/t</div></div>
-    <div class="metric"><div class="k">Velocidad Stokes por gravedad</div><div class="v" id="ug"></div><div class="s">Referencia sin campo centrífugo</div></div>
-    <div class="metric"><div class="k">Radio inicial usado</div><div class="v" id="rIni"></div><div class="s">McCabe lo representa como rA</div></div>
-  </div>
-  <div class="callout info"><b>Importante:</b> el caudal mostrado arriba no es un dato adicional. Es el <b>caudal volumétrico límite que resulta del modelo</b> al igualar el tiempo disponible de residencia con el tiempo necesario para que la partícula alcance la pared.<br><br>
-<b>Referencia del criterio:</b><br>
-• <b>Trayectoria completa r₁ → r₂:</b> usa ln(r₂/r₁). Geankoplis la presenta en la ecuación 14.4-11 y McCabe como caso de la ecuación general 29.78.<br>
-• <b>Diámetro de corte:</b> usa r inicial = (r₁+r₂)/2, por lo que el logaritmo se convierte en ln[2r₂/(r₁+r₂)]. Geankoplis: ecuación 14.4-12; McCabe: ecuación 29.79.</div>
-</div>
-</section>
-
-<section class="grid two">
-<div class="panel">
-  <h2>Trayectoria radial de la partícula</h2>
-  <div class="diagram">
-    <svg id="centrifugeSvg" width="100%" viewBox="0 0 540 350">
-      <defs><radialGradient id="fluidGrad"><stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#93c5fd"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <circle cx="270" cy="176" r="135" fill="#e2e8f0" stroke="#334155" stroke-width="4"/>
-      <circle cx="270" cy="176" r="70" fill="#f8fafc" stroke="#334155" stroke-width="4"/>
-      <path fill="url(#fluidGrad)" fill-rule="evenodd" d="M270,41 A135,135 0 1,1 269.9,41 M270,106 A70,70 0 1,0 270.1,106"/>
-      <line x1="270" y1="176" x2="405" y2="176" stroke="#64748b" stroke-dasharray="5 5"/>
-      <circle id="startMark" cx="340" cy="176" r="5" fill="#7c3aed"/>
-      <circle id="particle" cx="340" cy="176" r="10" fill="#dc2626" stroke="#fff" stroke-width="3" filter="url(#glow)"/>
-      <text x="270" y="171" text-anchor="middle" fill="#475569" font-size="12">eje</text>
-      <text id="animText" x="270" y="23" text-anchor="middle" fill="#334155" font-size="12">Calcule y anime la trayectoria</text>
-      <text id="pathText" x="270" y="332" text-anchor="middle" fill="#1e3a8a" font-size="13" font-weight="800"></text>
-    </svg>
-  </div>
-</div>
-<div class="panel">
-  <h2>Velocidad radial de precipitación</h2>
-  <p class="sub">La velocidad local aumenta con el radio porque la aceleración centrífuga es proporcional a r.</p>
-  <div class="chart"><svg id="velocityChart" width="100%" viewBox="0 0 620 330"></svg></div>
-</div>
-</section>
-
-<h2 class="section-title">C. Resolución explicada paso a paso</h2>
+<h2 id="solucion" class="section-title">B. Resolución guiada del ejercicio</h2>
 <section class="panel">
 <p class="sub">Cada etapa muestra qué se calcula, por qué se usa la ecuación, sus variables, la sustitución y el resultado.</p>
 
 <div class="solution-step">
   <div class="solution-head">Paso 1. Diferencia de densidades: fuerza impulsora de la separación</div>
   <div class="solution-body">
-    <p class="explain">La partícula puede desplazarse hacia la pared cuando su densidad es mayor que la del líquido. La diferencia de densidad determina, junto con el campo centrífugo, la fuerza neta disponible para sedimentar.</p>
+    <p class="explain">Una partícula más densa que el líquido migra radialmente hacia la pared bajo el campo centrífugo. La diferencia de densidad determina, junto con el campo centrífugo, la fuerza neta disponible para sedimentar.</p>
     <div class="eqbox"><div class="eq">Δρ = ρ<sub>p</sub> − ρ</div></div>
     <div class="varlist"><div><b>ρₚ</b>: densidad de la partícula [kg/m³]</div><div><b>ρ</b>: densidad del líquido [kg/m³]</div></div>
     <div class="substitution" id="stepDensity"></div><div class="resultline" id="resDensity"></div>
@@ -186,9 +132,19 @@
         q = <span class="frac"><span class="top">V</span><span class="bottom">t</span></span>
       </div>
     </div>
-    <div class="varlist"><div><b>q</b>: caudal volumétrico límite [m³/s]</div><div><b>tR</b>: tiempo de residencia del líquido [s]</div></div>
+    <div class="varlist"><div><b>q</b>: caudal volumétrico límite [m³/s]</div><div><b>tR</b>: tiempo de residencia nominal [s]</div></div>
+    <div class="callout info" id="flowDirectIntro"><b>Segunda vía: expresión directa de capacidad.</b> Se obtiene sustituyendo el tiempo integrado de Stokes en q = V/t.</div>
+    <div class="eqbox" style="margin-top:10px" id="flowDirectEq1"><div class="eq">q = <span class="frac"><span class="top">ω<sup>2</sup>(ρ<sub>p</sub>−ρ)D<sub>p</sub><sup>2</sup>V</span><span class="bottom">18 μ ln(r<sub>2</sub>/r<sub>A</sub>)</span></span></div></div>
+    <div class="eqbox" style="margin-top:10px" id="flowDirectEq2"><div class="eq">q = <span class="frac"><span class="top">π b (r<sub>2</sub><sup>2</sup>−r<sub>1</sub><sup>2</sup>) ω<sup>2</sup>(ρ<sub>p</sub>−ρ)D<sub>p</sub><sup>2</sup></span><span class="bottom">18 μ ln(r<sub>2</sub>/r<sub>A</sub>)</span></span></div></div>
+    <div class="eqbox" style="margin-top:10px" id="flowDirectEq3"></div>
+    <div class="eqbox" style="margin-top:10px" id="flowDirectEq4"></div>
+    <div class="varlist"><div><b>r<sub>A</sub></b>: radio inicial de la partícula [m]</div><div><b>r<sub>1</sub>, r<sub>2</sub></b>: radios de la superficie libre y de la pared [m]</div><div><b>b</b>: altura axial [m]</div><div><b>ω</b>: velocidad angular [rad/s]</div><div><b>ρ<sub>p</sub>−ρ</b>: diferencia de densidades [kg/m³]</div><div><b>D<sub>p</sub></b>: diámetro de partícula [m]</div><div><b>μ</b>: viscosidad dinámica [Pa·s]</div><div><b>V</b>: volumen anular del líquido [m³]</div></div>
+    <div class="substitution" id="stepFlowDirect"></div>
+    <div class="resultline" id="resFlowDirect"></div>
+    <div class="reference-note" id="flowDirectNote"><b>Advertencia de lectura:</b> el argumento de ln debe ser adimensional. La fórmula reproducida en la imagen contiene caracteres que parecen indicar una suma de un radio con el logaritmo; esa lectura no es dimensionalmente válida. Se muestra aquí la expresión derivada de la integración de Stokes, con ln(r₂/rA).</div>
+    <div class="callout" id="flowCheck" style="margin-top:10px"></div>
     <div class="substitution" id="stepFlow"></div><div class="resultline" id="resFlow"></div>
-    <div class="reference-note">Este q es una variable de respuesta del ejercicio. No es necesario ingresar un “caudal real” para resolver el problema básico. El valor cambia según el criterio seleccionado porque cambia el radio inicial de la trayectoria y, por tanto, el término logarítmico.</div>
+    <div class="reference-note">Este q es una capacidad límite idealizada, no la capacidad garantizada de una máquina real. No es necesario ingresar un “caudal real” para resolver el problema básico. El valor cambia según el criterio seleccionado porque cambia el radio inicial de la trayectoria y, por tanto, el término logarítmico.</div>
   </div>
 </div>
 
@@ -206,23 +162,80 @@
 </div>
 </section>
 
-<h2 class="section-title">D. Evaluación opcional de un caudal de operación</h2>
+<h2 id="resultados" class="section-title">C. Interpretación y visualización de resultados</h2>
+<section class="grid two">
+<div class="panel">
+  <h2>Variables calculadas</h2>
+  <div class="metricgrid">
+    <div class="metric"><div class="k">Diferencia de densidad, Δρ</div><div class="v" id="deltaRho"></div><div class="s">ρₚ − ρ</div></div>
+    <div class="metric"><div class="k">Velocidad angular, ω</div><div class="v" id="omega"></div><div class="s">2πN</div></div>
+    <div class="metric"><div class="k">Volumen de líquido, V</div><div class="v" id="vol"></div><div class="s">πb(r₂²−r₁²)</div></div>
+    <div class="metric"><div class="k">Velocidad en la pared, u(r₂)</div><div class="v" id="u2"></div><div class="s">Velocidad local de precipitación</div></div>
+    <div class="metric"><div class="k">Tiempo de precipitación</div><div class="v" id="tSet"></div><div class="s">Desde el radio inicial hasta r₂</div></div>
+    <div class="metric"><div class="k">Caudal límite, q</div><div class="v" id="qCap"></div><div class="s">Capacidad compatible con esa trayectoria</div></div>
+  </div>
+  <div id="regimeBox"></div><div class="legend-note">El control del régimen se calcula con la velocidad radial relativa en la pared; no evalúa el Reynolds del flujo axial.</div>
+</div>
+
+<div class="panel">
+  <h2>Interpretación física</h2>
+  <div class="metricgrid">
+    <div class="metric"><div class="k">Reynolds de partícula en r₂</div><div class="v" id="Re"></div><div class="s">Control del régimen de sedimentación</div></div>
+    <div class="metric"><div class="k">Aceleración centrífuga en r₂</div><div class="v" id="ac2"></div><div class="s">ω²r₂</div></div>
+    <div class="metric"><div class="k">Campo centrífugo relativo</div><div class="v" id="Gfactor"></div><div class="s">ω²r₂/g</div></div>
+    <div class="metric"><div class="k">Velocidad media de trayectoria</div><div class="v" id="uavg"></div><div class="s">(r₂−r inicial)/t</div></div>
+    <div class="metric"><div class="k">Velocidad Stokes por gravedad</div><div class="v" id="ug"></div><div class="s">Referencia sin campo centrífugo</div></div>
+    <div class="metric"><div class="k">Radio inicial usado</div><div class="v" id="rIni"></div><div class="s">McCabe lo representa como rA</div></div>
+  </div>
+  <div class="callout info"><b>Importante:</b> el caudal mostrado arriba no es un dato adicional. Es el <b>caudal volumétrico límite que resulta del modelo</b> al igualar el tiempo disponible de residencia con el tiempo necesario para que la partícula alcance la pared.<br><br>
+<b>Referencia del criterio:</b><br>
+• <b>Trayectoria completa r₁ → r₂:</b> usa ln(r₂/r₁) y una partícula hipotética que inicia cerca de la superficie libre.<br>
+• <b>Radio medio representativo:</b> usa r inicial = (r₁+r₂)/2, por lo que el logaritmo se convierte en ln[2r₂/(r₁+r₂)]. No significa recuperación completa de una distribución de tamaños.</div>
+</div>
+</section>
+
+<section class="grid two">
+<div class="panel">
+  <h2>Trayectoria radial de la partícula</h2>
+  <p class="sub">Esquema radial ilustrativo (no a escala). La posición radial del marcador sí sigue la trayectoria calculada.</p><div class="diagram">
+    <svg id="centrifugeSvg" width="100%" viewBox="0 0 540 350">
+      <defs><radialGradient id="fluidGrad"><stop offset="0%" stop-color="#dbeafe"/><stop offset="100%" stop-color="#93c5fd"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <circle cx="270" cy="176" r="135" fill="#e2e8f0" stroke="#334155" stroke-width="4"/>
+      <circle cx="270" cy="176" r="70" fill="#f8fafc" stroke="#334155" stroke-width="4"/>
+      <path fill="url(#fluidGrad)" fill-rule="evenodd" d="M270,41 A135,135 0 1,1 269.9,41 M270,106 A70,70 0 1,0 270.1,106"/>
+      <line x1="270" y1="176" x2="405" y2="176" stroke="#64748b" stroke-dasharray="5 5"/>
+      <circle id="startMark" cx="340" cy="176" r="5" fill="#7c3aed"/>
+      <circle id="particle" cx="340" cy="176" r="10" fill="#dc2626" stroke="#fff" stroke-width="3" filter="url(#glow)"/>
+      <text x="270" y="171" text-anchor="middle" fill="#475569" font-size="12">eje</text>
+      <text id="animText" x="270" y="23" text-anchor="middle" fill="#334155" font-size="12">Calcule y anime la trayectoria</text>
+      <text id="pathText" x="270" y="332" text-anchor="middle" fill="#1e3a8a" font-size="13" font-weight="800"></text>
+    </svg>
+  </div>
+</div>
+<div class="panel">
+  <h2>Velocidad radial de precipitación</h2>
+  <p class="sub">La velocidad local aumenta con el radio porque la aceleración centrífuga es proporcional a r.</p>
+  <div class="chart"><svg id="velocityChart" width="100%" viewBox="0 0 620 330"></svg></div>
+</div>
+</section>
+
+<h2 id="operacion" class="section-title">D. Evaluación opcional de un caudal de operación</h2>
 <section class="panel">
 <p class="sub"><b>Este apartado no es necesario para resolver el ejercicio básico.</b> Se usa solamente cuando se conoce un caudal al que realmente se desea operar la centrífuga y se quiere comprobar si la partícula seleccionada alcanzará la pared.</p>
 <div class="formgrid">
   <div class="field"><label>Caudal de operación conocido, q<sub>op</sub></label><div class="inputrow"><input id="Qop" type="number" value="0" min="0" step="any"><select id="Qopu"><option value="m3s">m³/s</option><option value="Lh">L/h</option><option value="mLh">mL/h</option></select></div></div>
-  <div class="field"><label>Tiempo de residencia resultante</label><input id="tRes" readonly></div>
+  <div class="field"><label>Tiempo de residencia nominal</label><input id="tRes" readonly></div>
   <div class="field"><label>Radio alcanzado al salir</label><input id="rExit" readonly></div>
 </div>
 <div class="btns no-print"><button class="secondary" id="evalFlowBtn">Evaluar caudal de operación</button></div>
 <div id="separationBox" class="callout info">Si qop = 0, este módulo queda sin evaluar. El resto del simulador funciona normalmente.</div>
 </section>
 
-<h2 class="section-title">E. Diseño inverso opcional</h2>
+<h2 id="diseno" class="section-title">E. Diseño inverso opcional</h2>
 <section class="panel">
 <p class="sub">Este módulo responde preguntas del tipo: “¿qué diámetro de partícula puede clarificarse a una capacidad requerida?” o “¿qué velocidad de rotación se necesita para procesar cierto caudal?”. Aquí el caudal es una <b>capacidad objetivo de diseño</b>, no un dato obligatorio del ejercicio anterior.</p>
 <div class="formgrid">
-  <div class="field"><label>Variable que desea determinar</label><select id="unknown"><option value="dp">Diámetro de corte, Dpc</option><option value="mu">Viscosidad compatible, μ</option><option value="N">Velocidad de rotación, N</option><option value="rhoP">Densidad de partícula, ρₚ</option><option value="L">Altura/profundidad, b</option></select></div>
+  <div class="field"><label>Variable que desea determinar</label><select id="unknown"><option value="dp">Diámetro de corte, Dpc</option><option value="mu">Viscosidad compatible, μ</option><option value="N">Velocidad de rotación, N</option><option value="rhoP">Densidad de partícula, ρₚ</option><option value="L">Longitud axial útil, b</option></select></div>
   <div class="field"><label>Capacidad objetivo, q<sub>obj</sub></label><div class="inputrow"><input id="Qtarget" type="number" value="2.3681e-9" step="any"><select id="Qtargetu"><option value="m3s">m³/s</option><option value="Lh">L/h</option><option value="mLh">mL/h</option></select></div></div>
   <div class="field"><label>Resultado</label><input id="unknownResult" readonly></div>
 </div>
@@ -231,7 +244,7 @@
 <div id="inverseSteps" class="callout info">Seleccione la incógnita y calcule.</div>
 </section>
 
-<h2 class="section-title">F. Comparador multivariable de escenarios</h2>
+<h2 id="escenarios" class="section-title">F. Comparador multivariable de escenarios</h2>
 <section class="panel">
 <p class="sub">La geometría del equipo y el criterio de trayectoria se toman de la sección A. En cada escenario puede modificar simultáneamente las características del fluido, la partícula, la velocidad de giro y un caudal de operación opcional.</p>
 <div class="btns no-print">
@@ -245,7 +258,7 @@
 <table>
 <thead><tr>
 <th>Escenario</th><th>μ, cP</th><th>ρp</th><th>ρ</th><th>Dp, µm</th><th>N</th>
-<th>Δρ</th><th>t, s</th><th>u(r2), m/s</th><th>q límite, L/h</th><th>Re</th><th>gcentrífuga</th><th>qop/q límite</th><th>¿Separa?</th>
+<th>Δρ</th><th>t, s</th><th>u(r2), m/s</th><th>q límite, L/h</th><th>Re</th><th>gcentrífuga</th><th>qop/q límite</th><th>¿Alcanza pared?</th>
 </tr></thead>
 <tbody id="cmpBody"></tbody>
 </table>
@@ -276,8 +289,8 @@
 </ol>
 </div>
 <div class="panel">
-<h2>Alcance del simulador</h2>
-<p class="small">Esta versión se limita a sedimentación centrífuga sólido‑líquido en una cámara tubular bajo el modelo de Stokes. No sustituye el modelo de arrastre cuando el Reynolds de partícula sale del intervalo correspondiente, ni modela filtración centrífuga, centrífugas de discos o separación líquido‑líquido.</p>
+<h2>Supuestos y alcance del simulador</h2>
+<p class="small">Esta versión representa sedimentación centrífuga sólido‑líquido idealizada: partículas esféricas aisladas, suspensión diluida, propiedades constantes, líquido en rotación solidaria, residencia nominal uniforme, sin sedimentación impedida, turbulencia axial, acumulación de sólidos ni distribución de tiempos de residencia. No sustituye un cálculo con correlaciones de arrastre fuera de Stokes, ni modela filtración centrífuga, centrífugas de discos o separación líquido‑líquido.</p>
 </div>
 </section>
 
@@ -293,10 +306,10 @@
 </tbody>
 </table>
 </div>
-<p class="small" style="margin-bottom:0">Los dos textos describen los mismos dos planteamientos físicos. Por ello, el simulador distingue los criterios por su trayectoria y muestra las referencias de ambos autores.</p>
+<p class="small" style="margin-bottom:0">La trayectoria completa es un criterio límite conservador. El radio medio es una aproximación representativa para caracterizar el corte ideal, no una prueba de recuperación del 100 %.</p>
 </section>
 
-<footer>Recurso docente basado en el tratamiento de sedimentación centrífuga y diámetro de corte de McCabe, Smith y Harriott y de Geankoplis, según los textos suministrados para el curso.</footer>
+<footer>Versión revisada v5 · modelo teórico ideal · <span>13 de octubre de 2026</span><br>Recurso docente basado en el tratamiento de sedimentación centrífuga y diámetro de corte de McCabe, Smith y Harriott y de Geankoplis, según los textos suministrados para el curso.</footer>
 </div>
 
 <script type="module" src="/src/main.js"></script>
